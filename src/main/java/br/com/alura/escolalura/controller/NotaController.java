@@ -38,7 +38,13 @@ public class NotaController {
     public String pesquisarPor(@RequestParam("classificacao") String classificacao,
                                @RequestParam("notacorte") String notaCorte, Model model){
 
-
+        if(classificacao.equals("aprovados")){
+            List<Aluno> alunos = alunoRepository.buscarAprovados(Double.parseDouble(notaCorte));
+            model.addAttribute("alunos", alunos);
+        }else{
+            List<Aluno> alunos = alunoRepository.buscarReprovados(Double.parseDouble(notaCorte));
+            model.addAttribute("alunos", alunos);
+        }
 
         return "nota/pesquisar";
     }
