@@ -2,11 +2,14 @@ package br.com.alura.escolalura.controller;
 
 import br.com.alura.escolalura.model.Aluno;
 import br.com.alura.escolalura.repository.AlunoRepository;
+import br.com.alura.escolalura.service.GeolocalizacaoService;
+import com.google.maps.errors.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +19,8 @@ public class AlunoController {
 
     @Autowired
     private AlunoRepository alunoRepository;
+    @Autowired
+    private GeolocalizacaoService geolocalizacaoService;
 
     @GetMapping("/cadastrar")
     public String cadastrar(Model model){
@@ -26,7 +31,12 @@ public class AlunoController {
 
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Aluno aluno){
-        alunoRepository.save(aluno);
+        try {
+            aluno.getContato().setCoordinates(geolocalizacaoService.getLatLong(aluno.getContato()));
+            alunoRepository.save(aluno);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         return "redirect:/";
     }
