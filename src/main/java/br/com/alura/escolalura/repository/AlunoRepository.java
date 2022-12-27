@@ -12,4 +12,6 @@ public interface AlunoRepository extends MongoRepository<Aluno, String> {
     List<Aluno> buscarAprovados(double notaCorte);
     @Query("{'notas': {$lt : {'valor': ?0}}}")
     List<Aluno> buscarReprovados(double notaCorte);
+
+    List<Aluno> pesquisarPorGeolocalizacao(Aluno aluno); // Precisa criar lógica para retornar alunos próximos
 }
